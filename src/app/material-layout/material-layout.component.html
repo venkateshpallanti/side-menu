@@ -1,0 +1,120 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+
+    <button mat-icon-button (click)="drawer.toggle();">
+      <mat-icon routerLinkActive="active-icon">menu</mat-icon>
+    </button>
+    <span>
+      <img src="assets/logo.png" class="logoStyles" />
+    </span>
+
+    <span class="toolbar-spacer "></span>
+
+
+    <button mat-button [matMenuTriggerFor]="aboveMenu">
+      <mat-icon>people</mat-icon>
+      Customer</button>
+    <mat-menu #aboveMenu="matMenu" yPosition="above">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu>
+    
+    <button mat-button [matMenuTriggerFor]="belowMenu">
+      <mat-icon>supervised_user_circle</mat-icon>
+      Supplier</button>
+    <mat-menu #belowMenu="matMenu" yPosition="below">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu>
+    
+    <button mat-button [matMenuTriggerFor]="beforeMenu">
+      <mat-icon>inventory_2</mat-icon>
+      Suit
+      <mat-icon role="img" class="mat-icon notranslate material-icons mat-icon-no-color" aria-hidden="true"
+          data-mat-icon-type="font">arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #beforeMenu="matMenu" xPosition="before">
+      <button mat-menu-item>
+        <mat-icon>category</mat-icon>
+        Category</button>
+      <button mat-menu-item>
+        <mat-icon>layers</mat-icon>
+        Sub Category</button>
+      <button mat-menu-item>
+        <mat-icon>all_inbox</mat-icon>
+        Product</button>
+    </mat-menu>
+    
+    
+    
+    
+
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onSelectOption('1')">
+        <mat-icon>wb_sunny</mat-icon>
+        <span>Option 1</span>
+      </button>
+      <button mat-menu-item (click)="onSelectOption('2')">
+        <mat-icon>lens</mat-icon>
+        <span>Option 2</span>
+      </button>
+      <button mat-menu-item (click)="onSelectOption('3')">
+        <mat-icon>brightness_3</mat-icon>
+        <span>Option 3</span>
+      </button>
+    </mat-menu>
+
+  </mat-toolbar-row>
+
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" [attr.role]="(false | async) ? 'dialog' : 'navigation'"
+    [mode]="(false | async) ? 'over' : 'side'" [opened]="isMenuOpen">
+
+    <!-- <mat-nav-list >
+      <a [routerLink]="['/home']" mat-list-item href="#" routerLinkActive="active"><mat-icon routerLinkActive="active-icon">home</mat-icon><span class="ml-2" > Welcome </span></a>
+      <a [routerLink]="['/profile']" mat-list-item href="#" routerLinkActive="active"><mat-icon routerLinkActive="active-icon">settings</mat-icon><span class="ml-2" > Profile Settings</span></a>
+    </mat-nav-list> -->
+    <mat-nav-list class="side-navnar">
+      <ng-container *ngFor="let menu of menuList | async; index as i;">
+        <ng-container [ngTemplateOutlet]="menu.children ?  childMenu : parentMenu"
+          [ngTemplateOutletContext]="{menu:menu}">
+        </ng-container>
+      </ng-container>
+    </mat-nav-list>
+
+
+  </mat-sidenav>
+  <ng-template #parentMenu let-menu="menu">
+    <mat-list-item [routerLink]="menu.routerLink" routerLinkActive="is-active" [routerLinkActiveOptions]="{exact:
+      true}">
+      <mat-icon>{{menu.icon}}</mat-icon> {{menu.text}}
+    </mat-list-item>
+  </ng-template>
+  <ng-template #childMenu let-menu="menu">
+    <mat-expansion-panel [class.mat-elevation-z0]="true">
+      <mat-expansion-panel-header>
+        <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>{{menu.text}}
+      </mat-expansion-panel-header>
+      <mat-nav-list>
+        <mat-list-item [routerLink]="submenu.routerLink" *ngFor="let submenu of menu.children"
+          routerLinkActive="is-active" [routerLinkActiveOptions]="{exact:
+            true}">
+          <mat-icon>{{submenu.icon}}</mat-icon> {{submenu.text}}
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-expansion-panel>
+  </ng-template>
+
+  <mat-sidenav-content [ngStyle]="{ 'margin-left.px': contentMargin }">
+    <div class="main">
+      <router-outlet #outlet="outlet"></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
